@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .serializers import GameViewSet
+from .views import GameViewSet
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
