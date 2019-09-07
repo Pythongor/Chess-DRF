@@ -8,6 +8,8 @@ from rest_framework.response import Response
 
 from .models import Game, Figure
 from .serializers import GameSerializer
+from .game_checker import GameChecker
+from .game_manipulator import GameManipulator
 
 
 class GameViewSet(viewsets.ViewSet):
@@ -22,8 +24,10 @@ class GameViewSet(viewsets.ViewSet):
     def partial_update(self, request, pk=None):
         queryset = Game.objects.all()
         game = get_object_or_404(queryset, pk=pk)
-        if game.status == 'invited':
+        if game.status == 'INVITED':
             return self.partial_update_invite(request, game)
+        elif game.status == 'STARTED':
+            return self.partial_update_turn(request, game)
         else:
             pass
 
@@ -40,24 +44,17 @@ class GameViewSet(viewsets.ViewSet):
         else:
             return Response({'Error': 'it is not your game'}, status=HTTP_403_FORBIDDEN)
 
-    def start_game(self, request, game):
-        game_id = game.id
-        self.create_figures(request, game)
-        game = Game.objects.filter(id=game.id).update(status='started')
-        return Response({'invite #{}'.format(game_id): 'started'})
+    @staticmethod
+    def start_game(request, game):
+        manipulator = GameManipulator(game)
+        manipulator.start()
+        return Response({'invite #{}'.format(game.id): 'started'})
 
     @staticmethod
-    def create_figures(request, game):
-        for i in enumerate(Figure.DEFAULT_FIGURES):
-            status = 'START' if i[1] in ('rook', 'king') else 'NORMAL'
-            Figure.objects.create(game=game, owner=game.white_player, is_white=True,
-                                  role=i[1], status=status, height=1, width=i[0]+1)
-            Figure.objects.create(game=game, owner=game.black_player, is_white=False,
-                                  role=i[1], status=status, height=8, width=i[0]+1)
-            Figure.objects.create(game=game, owner=game.white_player, is_white=True,
-                                  role='pawn', status='NORMAL', height=2, width=i[0]+1)
-            Figure.objects.create(game=game, owner=game.black_player, is_white=False,
-                                  role='pawn', status='NORMAL', height=7, width=i[0]+1)
+    def partial_update_turn(request, game):
+        checker = GameChecker(game)
+        data = checker.create_command(request.data['turn'])
+        return Response(data)
 
     @staticmethod
     def destroy(request, pk=None):
