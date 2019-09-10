@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}
+Chess - game
+{% endblock %}
+
+{% block content %}
+<div class="centered">
+<table>
+{% for hindex, row in height %}
+  <tr>
+  {% for windex, column, letter in width %}
+    {% if windex == 0 and hindex == 0 or windex == 1 and hindex == 1 %}
+      <td style="background: firebrick">
+    {% else %}
+      <td style="background: khaki">
+    {% endif %}
+    {% for height, width, role in white_figures %}
+      {% if height == row and width == column %}
+        <img src="/static/figures/white {{role}}.png" alt="">
+      {% endif %}
+    {% endfor %}
+    {% for height, width, role in black_figures %}
+      {% if height == row and width == column %}
+        <img src="/static/figures/black {{role}}.png" alt="">
+      {% endif %}
+    {% endfor %}
+<!--      {{column}}{{row}}{{hindex}}{{windex}}-->
+    </td>
+  {% endfor %}
+  </tr>
+{% endfor %}
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,112 @@
+body {
+    background-image: linear-gradient(120deg, maroon, brown,
+    indianred, lightcoral, salmon, peachpuff);
+}
+
+.centered-horizontal {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+}
+
+div.centered {
+  height: 49.7em;
+  display: flex;
+  align-items: center;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+  justify-content: center }
+
+.centered_submit {
+    width: 100%;
+    height: 100%;
+    top: 50;
+    left: 0;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 0;
+}
+
+.my_button {
+    background: #b5bdc8;
+    background: linear-gradient(to top, darkorchid 0%, aqua 36%,
+    darkorchid 100%);
+    font-size: 16px; /* Размер шрифта */
+    padding: 10px 20px; /* Поля вокруг текста */
+    color: darkorchid; /* Цвет текста */
+    border: 1px solid #333; /* Параметры рамки */
+    border-radius: 20px; /* Радиус скругления */
+}
+
+.my_button:hover {
+    background: linear-gradient(to top, aqua 0%, darkorchid
+    36%, aqua 100%);
+    color: aqua;
+}
+
+.form-control.my {
+text-align-last: center
+}
+
+.form-control.date {
+width: 100px;
+text-align: center
+}
+
+.custom-file-label.my {
+text-align: left
+}
+
+.lcorners {
+  border-radius: 20px 20px 20px 0px;
+  background: #00bb00;
+  margin-left: 2%;
+  margin-top: 2%;
+  width: 200px;
+  padding-left: 7px;
+  padding-right: 10px;
+}
+
+.rcorners {
+  border-radius: 20px 20px 0px 20px;
+  background: #ff00ff;
+  margin-left: auto;
+  margin-right: 2%;
+  margin-top: 2%;
+  width: 200px;
+  padding-left: 7px;
+  padding-right: 10px;
+}
+
+ table {
+    border-collapse: collapse !important;
+    border:solid black 3px;}
+
+td, th {border-left:solid black 1px;
+    background-color: #505050;
+    width: 50px;
+    height: 50px;
+    color:white}
+
+.messages {
+    border-radius: 20px;
+    border: 1px solid black;
+    background: #dcd1d5;
+}
+
+#id_text.form-control {
+    border-radius: 20px;
+    background-color: #ffe6a8;
+}
+
+th {border-top: none;}
+
+
+
+

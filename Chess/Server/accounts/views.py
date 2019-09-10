@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
+from django.middleware.csrf import get_token
 
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
@@ -30,6 +31,7 @@ def login(request):
         return Response({'error': 'Invalid Credentials'},
                         status=HTTP_404_NOT_FOUND)
     token, _ = Token.objects.get_or_create(user=user)
+    print(get_token(request))
     return Response({'token': token.key},
                     status=HTTP_200_OK)
 

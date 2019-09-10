@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}
+Chess - games
+{% endblock %}
+
+{% block content %}
+{% for game in games %}
+<div class="centered">
+    <div class="card" style="width:400px; margin:0 auto; border-radius:20px;
+      {% if game.status == 'STARTED' %}
+        background: khaki;
+      {% elif game.status == 'INVITED' %}
+        background: paleturquoise;
+      {% endif %}
+">
+    <div class="card-body">
+      {% if game.white_player == request.user.username %}
+        <p>White - you</p>
+        <p>Black - {{game.black_player}}</p>
+      {% elif game.black_player == request.user.username %}
+        <p>White - {{game.white_player}}</p>
+        <p>Black - you</p>
+      {% endif %}
+      <h4></h4>
+    </div>
+  {{game.id}}
+  {{game.white_player}}
+  {{game.black_player}}
+  {{game.status}}
+</div>
+</div>
+{% endfor %}
+{% endblock %}
