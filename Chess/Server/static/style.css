@@ -3,6 +3,15 @@ body {
     indianred, lightcoral, salmon, peachpuff);
 }
 
+*{box-sizing:border-box}
+body {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
 .centered-horizontal {
     width: 100%;
     height: 100%;
@@ -11,6 +20,11 @@ body {
     align-content: center;
     justify-content: center;
     text-align: center;
+}
+
+a [type="button"] {
+    background: brawn;
+    border: solid 2 px peru;
 }
 
 div.centered {
@@ -33,9 +47,45 @@ div.centered {
     font-size: 0;
 }
 
+div.col-8 {
+width: 260px; height: 100px;
+border-style: solid;
+border-image-width: 15px;
+border-image-source: url(figures/white pawn.png);
+border-image-slice: 30;
+border-image-repeat: round;
+}
+
+P {
+    font-family: 'Times New Roman';
+    margin: 10px;
+}
+
+.white {
+    font-style: bold;
+    color: peru;
+    background: white;
+    border-radius: 5px;
+    border: groove 2px brown;
+}
+
+.black {
+    font-style: bold;
+    color: peru;
+    background: black;
+    border-radius: 5px;
+    border: groove 2px brown;
+}
+
+label {
+    display: block;
+    text-align: center;
+    line-height: 150%;
+    font-size: .85em;
+}
+
 .my_button {
     background: #b5bdc8;
-    background: linear-gradient(to top, darkorchid 0%, aqua 36%,
     darkorchid 100%);
     font-size: 16px; /* Размер шрифта */
     padding: 10px 20px; /* Поля вокруг текста */
@@ -84,29 +134,106 @@ text-align: left
   padding-right: 10px;
 }
 
- table {
-    border-collapse: collapse !important;
-    border:solid black 3px;}
+table {border-collapse: collapse !important;
+    border:ridge brown 3px;
+    box-shadow: 5px 10px 10px rgba(0,0,0,0.7)
+    background: coral;
+    }
 
-td, th {border-left:solid black 1px;
-    background-color: #505050;
-    width: 50px;
+tr.player {
+    border: solid 2px brown;
+}
+
+th {border: solid 2px brown;
+    text-align: center;
+}
+
+td {width: 50px;
     height: 50px;
-    color:white}
+    text-align: center;}
 
-.messages {
-    border-radius: 20px;
-    border: 1px solid black;
-    background: #dcd1d5;
+td.light {
+    border: solid black 2px;
+    background-color: khaki
 }
 
-#id_text.form-control {
-    border-radius: 20px;
-    background-color: #ffe6a8;
+td.dark {
+    border: solid black 2px;
+    background-color: firebrick;
 }
 
-th {border-top: none;}
+td.height_border {
+    width: 30px;
+    background-color: maroon;
+    color:orange
+}
 
+td.width_border {
+    height: 20px;
+    background-color: maroon;
+    color: yellowgreen
+}
 
+td.corner_border {
+    width: 30px;
+    height: 30px;
+    background-color: maroon;
+}
 
+img.figure {transition-duration: .5s}
 
+img.figure:hover {
+  -o-transform: translateY(-20px);
+  -ms-transform: translateY(-20px);
+  -moz-transform: translateY(-20px);
+  -webkit-transform: translateY(-20px);
+  transform: translateY(-20px);
+}
+
+img.bottle:hover {
+  -o-transform: rotate(120deg);
+  -ms-transform: rotate(120deg);
+  -moz-transform: rotate(120deg);
+  -webkit-transform: rotate(120deg);
+  transform: rotate(120deg);
+}
+
+div.card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: darksalmon;
+    box-shadow: 5px 10px 10px rgba(0,0,0,0.7);
+    margin: 30px;
+    padding: 30px;
+    border-top-left-radius: 100% 20px;
+    border-bottom-right-radius: 100% 20px;
+    border-top: solid 5px brown;
+    border-bottom: solid 5px brown;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+}
+
+div.card h3, p {
+    color: indianred;
+}
+
+div.card h4 {
+    width: 200px;
+    word-wrap: break-word;
+    padding: 5px;
+    background: peru;
+    border: groove 2px linen;
+    border-radius: 5px;
+}
+
+div.form-row {
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+#id_start.form-control,  #id_end.form-control{
+    width: 70px;
+}

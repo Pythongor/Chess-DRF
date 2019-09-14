@@ -8,17 +8,20 @@ Chess - login
 {% block content %}
 <input type="hidden" name="next" value="/profile"/>
 <div class="centered">
-      <form action="" method="POST">
-        {% csrf_token %}
-        {% bootstrap_form form layout='inline' %}
-        {% buttons %}
-          <div class="centered_submit">
-          <button type="submit" class="btn btn-dark">
-            Enter
-          </button>
-          <input type="hidden" name="next" value="/client/games/" />
-          </div>
-        {% endbuttons %}
-      </form>
+  <div class="card">
+  <h4>Welcome to Chess DRF!</h4>
+  <form action="" method="POST">
+    {% csrf_token %}
+    {% bootstrap_form form  %}
+    {% buttons %}
+      <div class="centered_submit">
+      <button type="submit" class="btn btn-dark">
+        Enter
+      </button>
+      <input type="hidden" name="next" value="/client/games/" />
+      </div>
+    {% endbuttons %}
+  </form>
+  </div>
 </div>
 {% endblock %}

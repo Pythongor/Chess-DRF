@@ -58,8 +58,8 @@ class GameChecker:
         return roles
 
     def create_command(self, turn):
-        if self._get_figure(turn[0]):
-            figure = self._get_figure(turn[0])
+        if self.get_figure(turn[0]):
+            figure = self.get_figure(turn[0])
             if figure.is_white != self.game.white_turn:
                 return {'ERROR MESSAGE': 'It is not your figure. Try again.'}
             elif self._checkup_move(figure, turn[1]) == 'ILLEGAL MOVE':
@@ -71,14 +71,18 @@ class GameChecker:
         else:
             return {'ERROR MESSAGE': 'There is no figure. Try again.'}
 
-    def _get_figure(self, pos):
+    def get_figure(self, pos, get=True):
         if Figure.objects.filter(game=self.game, height=pos[0], width=pos[1]).exists():
-            return Figure.objects.get(game=self.game, height=pos[0], width=pos[1])
+            if get:
+                return Figure.objects.get(game=self.game, height=pos[0], width=pos[1])
+            else:
+                return Figure.objects.filter(game=self.game, height=pos[0], width=pos[1])
 
     def _checkup_move(self, figure, move_to):
         command = figure.move_possibility(move_to)
         actions = {
-            'ERROR': {'ILLEGAL MOVE': lambda x: 'ILLEGAL MOVE'},
+            'ERROR': {'ILLEGAL MOVE': lambda x: {'ERROR': 'ILLEGAL MOVE'},
+                      None: lambda x: {'ERROR': 'ILLEGAL MOVE'}},
             'COORDINATES': {'MOVE ATTACK': self._move_attack_checkup,
                             'MOVE ATTACK STATUS': self._move_attack_status_checkup,
                             'MOVE': self._move_checkup,
@@ -90,82 +94,84 @@ class GameChecker:
         }
         for i in actions:
             if i in command:
-                return actions[i][command['CHECKUP']](command[i])
+                coords = [figure.height, figure.width]
+                return actions[i][command['CHECKUP']](coords, command[i])
 
-    def _move_attack_checkup(self, move_to):
-        if self._get_figure(move_to):
-            figure = self._get_figure(move_to)
+    def _move_attack_checkup(self, coords, move_to):
+        if self.get_figure(move_to):
+            figure = self.get_figure(move_to)
             turn = not self.game.white_turn if self.game.status == 'VIRTUAL' \
                 else self.game.white_turn
             if figure.is_white != turn:
-                return {'ATTACK ACCEPT': move_to}
+                return {'ATTACK ACCEPT': [coords, move_to]}
             else:
                 return {'ERROR': 'ILLEGAL MOVE'}
         else:
-            return {'MOVE ACCEPT': move_to}
+            return {'MOVE ACCEPT': [coords, move_to]}
 
-    def _move_attack_status_checkup(self, move_to):
-        result = self._move_attack_checkup(move_to)
+    def _move_attack_status_checkup(self, coords, move_to):
+        result = self._move_attack_checkup(coords, move_to)
         for i in ('ATTACK ACCEPT', 'MOVE ACCEPT'):
             if i in result:
                 result[i + ' STATUS'] = result[i]
                 del result[i]
         return result
 
-    def _move_checkup(self, move_to):
-        if self._get_figure(move_to):
+    def _move_checkup(self, coords, move_to):
+        if self.get_figure(move_to):
             return {'ERROR': 'ILLEGAL MOVE'}
         elif move_to[0] in (1, 8):
-            return {'TRANSFORMATION': move_to}
+            return {'MOVE TRANSFORMATION': [coords, move_to]}
         else:
-            return {'MOVE ACCEPT': move_to}
+            return {'MOVE ACCEPT': [coords, move_to]}
 
-    def _attack_checkup(self, move_to):
-        if self._get_figure(move_to):
-            figure = self._get_figure(move_to)
+    def _attack_checkup(self, coords, move_to):
+        if self.get_figure(move_to):
+            figure = self.get_figure(move_to)
             if figure.is_white == self.game.white_turn:
                 return {'ERROR': 'ILLEGAL MOVE'}
             elif move_to[0] in (1, 8):
-                return {'TRANSFORMATION': move_to}
+                return {'ATTACK TRANSFORMATION': [coords, move_to]}
             else:
-                return {'ATTACK ACCEPT': move_to}
+                return {'ATTACK ACCEPT': [coords, move_to]}
         else:
-            return self._en_passant_checkup(move_to)
+            return self._en_passant_checkup(coords, move_to)
 
-    def _en_passant_checkup(self, move_to):
+    def _en_passant_checkup(self, coords, move_to):
         index = {True: -1, False: 1}[getattr(self, 'white_turn')]
-        if self._get_figure([move_to[0] + index, move_to[1]]):
-            attacked = self._get_figure([move_to[0] + index, move_to[1]])
+        if self.get_figure([move_to[0] + index, move_to[1]]):
+            attacked = self.get_figure([move_to[0] + index, move_to[1]])
             if attacked.role == 'pawn' and attacked.status == 'EN PASSANT':
-                return {'ACCEPT EN PASSANT': [move_to[0] + index, move_to[1]]}
+                return {'ACCEPT EN PASSANT': [coords, [move_to[0] + index, move_to[1]]]}
             else:
                 return {'ERROR': 'ILLEGAL MOVE'}
         else:
             return {'ERROR': 'ILLEGAL MOVE'}
 
-    def _query_checkup(self, query):
-        for _ in query[1:-1]:
-            if any([i in self._move_attack_checkup(i) for i in ('ATTACK ACCEPT', 'ERROR')]):
-                return {'ERROR': 'ILLEGAL MOVE'}
-        return self._move_attack_checkup(query[-1])
-
-    def _query_status_checkup(self, query):
-        for _ in query[1:-1]:
-            if any([i in self._move_attack_status_checkup(i) for i in (
+    def _query_checkup(self, coords, query):
+        for pos in query[1:-1]:
+            if any([i in self._move_attack_checkup(coords, pos) for i in (
                     'ATTACK ACCEPT', 'ERROR')]):
                 return {'ERROR': 'ILLEGAL MOVE'}
-        return self._move_attack_status_checkup(query[-1])
+        return self._move_attack_checkup(coords, query[-1])
 
-    def _castling_checkup(self, query):
+    def _query_status_checkup(self, coords, query):
+        for pos in query[1:-1]:
+            if any([i in self._move_attack_status_checkup(coords, pos) for i in (
+                    'ATTACK ACCEPT', 'ERROR')]):
+                return {'ERROR': 'ILLEGAL MOVE'}
+        return self._move_attack_status_checkup(coords, query[-1])
+
+    def _castling_checkup(self, coords, query):
         for i in query:
-            if 'MOVE ACCEPT' not in self._move_attack_checkup(i):
+            if 'MOVE ACCEPT' not in self._move_attack_checkup(coords, i):
                 return {'ERROR': 'ILLEGAL MOVE'}
         for i in query[:3]:
             if self._hit_checkup(i):
                 return {'ERROR': 'ILLEGAL MOVE'}
         coord = {(1, 2): '0', (1, 7): '1',
                  (8, 2): '2', (8, 7): '3'}[tuple(query[-1])]
-        return {'CASTLING ACCEPT': coord}
+        return {'CASTLING ACCEPT': [coords, coord]}
 
     def _hit_checkup(self, coord):
         figures = Figure.objects.filter(game=self.game, is_white=not self.game.white_turn)
@@ -174,18 +180,18 @@ class GameChecker:
                 return True
         return False
 
-    def _move_query_checkup(self, query):
+    def _move_query_checkup(self, coords, query):
         for i in query:
-            if self._move_checkup(i) == {'ERROR': 'ILLEGAL MOVE'}:
+            if self._move_checkup(coords, i) == {'ERROR': 'ILLEGAL MOVE'}:
                 return {'ERROR': 'ILLEGAL MOVE'}
-        return {'MOVE ACCEPT STATUS': query[-1]}
+        return {'MOVE ACCEPT STATUS': [coords, query[-1]]}
 
     def _next_turn_modeling(self, command, positions):
         virtual = Game(status='VIRTUAL', white_player=self.game.white_player,
                        black_player=self.game.black_player,
                        white_turn=self.game.white_turn)
         virtual_checker = GameChecker(virtual)
-        return True
+        return False
         # virtual = deepcopy(self)
         # virtual.board.mode = 'Virtual'
         # virtual._make_turn(command, positions)

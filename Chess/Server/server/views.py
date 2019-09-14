@@ -36,7 +36,7 @@ class GameViewSet(viewsets.ViewSet):
         if game.status == 'INVITED':
             return self.partial_update_invite(request, game)
         elif game.status == 'STARTED':
-            return self.partial_update_turn(request, game)
+            return self.partial_update_move(request, game)
         else:
             pass
 
@@ -59,11 +59,21 @@ class GameViewSet(viewsets.ViewSet):
         manipulator.start()
         return Response({'invite #{}'.format(game.id): 'started'})
 
-    @staticmethod
-    def partial_update_turn(request, game):
-        checker = GameChecker(game)
-        data = checker.patch_request(request.data['turn'])
+    def partial_update_move(self, request, game):
+        player = {True: game.white_player, False: game.black_player}[game.white_turn]
+        if request.user.username != str(player):
+            data = {'ERROR MESSAGE': 'Wait your turn!'}
+        else:
+            checker = GameChecker(game)
+            data = checker.patch_request(request.data['turn'])
+            if any(['ERROR MESSAGE', 'GAME']) not in data:
+                self.make_move(game, data)
         return Response(data)
+
+    @staticmethod
+    def make_move(game, command):
+        manipulator = GameManipulator(game)
+        manipulator.make_move(command)
 
     @staticmethod
     def destroy(request, pk=None):
@@ -81,7 +91,7 @@ class GameViewSet(viewsets.ViewSet):
         game = get_object_or_404(queryset, pk=pk)
         serializer = GameSerializer(game)
         context = serializer.data
-        if context['status'] != 'invited':
+        if context['status'] != 'INVITED':
             context['black_figures'] = self.get_figures_data(game, False)
             context['white_figures'] = self.get_figures_data(game, True)
         return Response(context)
@@ -97,13 +107,16 @@ class GameViewSet(viewsets.ViewSet):
             figures_data.append(figure_data)
         return figures_data
 
-    def create(self, request):
+    @staticmethod
+    def create(request):
         black_player = get_object_or_404(
             User, username=request.data.get('black_player')
         )
         game = Game.objects.create(white_player=request.user, black_player=black_player)
         return Response(
-            {'white_player': game.black_player.username,
-             'black_player': game.white_player.username,
-             'status': game.status},
+            {
+                'id': game.id,
+                'white_player': game.black_player.username,
+                'black_player': game.white_player.username,
+                'status': game.status},
             status=HTTP_200_OK)

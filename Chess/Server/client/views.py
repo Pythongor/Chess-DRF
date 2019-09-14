@@ -1,18 +1,37 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView
-from django.db.models import Q
-from django.urls import path
+from django.shortcuts import redirect, render
+from django.core.paginator import Paginator
+from django.views.generic import TemplateView, FormView
 
 from rest_framework.authtoken.models import Token
 
 import requests
+
+from .forms import PlayerMoveForm
 
 
 def tokenize_headers(request, headers=None):
     headers = {} if headers is None else headers
     token, _ = Token.objects.get_or_create(user=request.user)
     headers['Authorization'] = 'Token {}'.format(token)
+    headers['Content-Type'] = 'application/json'
     return headers
+
+
+class InvitedGame(TemplateView):
+    template_name = 'client/invited_game.html'
+
+    def get(self, request, pk=None, *a, **kw):
+        print('GET')
+        context = self.requests_get(request, pk)
+        return self.render_to_response(context.json())
+
+    def requests_get(self, request, pk):
+        context = requests.get(
+            'http://127.0.0.1:8000/server/games/{}'.format(pk),
+            headers=tokenize_headers(request))
+        context = context.json()
+        print(context)
+        return context
 
 
 class GameListView(TemplateView):
@@ -20,34 +39,131 @@ class GameListView(TemplateView):
 
     def get(self, request, *a, **kw):
         context = requests.get('http://127.0.0.1:8000/server/games',
-                               headers=tokenize_headers(request))
-        return self.render_to_response(context.json())
+                               headers=tokenize_headers(request)).json()
+        paginator = Paginator(context['games'], 2)
+        page = request.GET.get('page')
+        games = paginator.get_page(page)
+        users = requests.get(
+            'http://127.0.0.1:8000/accounts/users',
+            headers=tokenize_headers(request)).json()['users']
+        return self.render_to_response({'games': games, 'users': users})
 
 
-class GameView(TemplateView):
+def invite(request, username):
+    data = {'black_player': username}
+    response = requests.post('http://127.0.0.1:8000/server/games/',
+                             json=data, headers=tokenize_headers(request))
+    print(response.json())
+    game_id = response.json()['id']
+    return redirect('../{}?0'.format(game_id))
+
+
+def accept_invite(request, pk):
+    data = {'invite': 'accept'}
+    response = requests.patch(
+        'http://127.0.0.1:8000/server/games/{}/'.format(pk),
+        json=data, headers=tokenize_headers(request))
+    return redirect('../{}'.format(pk))
+
+
+def delete(request, pk):
+    requests.delete('http://127.0.0.1:8000/server/games/{}/'.format(pk),
+                    headers=tokenize_headers(request))
+    return redirect('..')
+
+
+class GameView(FormView):
     template_name = 'client/game.html'
+    form_class = PlayerMoveForm
 
     def get(self, request, pk=None, *a, **kw):
+        context = self.requests_get(request, pk)
+        return self.render_to_response(context)
+
+    def requests_get(self, request, pk):
         context = requests.get(
             'http://127.0.0.1:8000/server/games/{}'.format(pk),
             headers=tokenize_headers(request))
         context = context.json()
-        context['height'] = list(zip([i % 2 for i in range(8, 0, -1)],
-                                     list(range(8, 0, -1))))
-        context['width'] = list(zip([i % 2 for i in range(1, 9)],
-                                    [i for i in range(1, 9)], 'abcdefgh'))
-        context = self.figure_dict_refactoring(context, True)
-        context = self.figure_dict_refactoring(context, False)
-        return self.render_to_response(context)
+        if context['status'] == 'INVITED':
+            self.success_url = 'invite/{}'.format(context['id'])
+        else:
+            self.success_url = str(pk)
+            context = self._figure_dict_refactoring(context, True)
+            context = self._figure_dict_refactoring(context, False)
+        self._add_representation_content(request, context)
+        return context
 
     @staticmethod
-    def figure_dict_refactoring(context, white):
+    def _figure_dict_refactoring(context, white):
         color = 'white' if white else 'black'
         figures = []
         for figure in context[color + '_figures']:
             figures.append([figure['height'], figure['width'],
                             figure['role']])
         context[color + '_figures'] = figures
+        return context
+
+    def _add_representation_content(self, request, context):
+        if str(request.user.username) == context['white_player']:
+            context['height'] = list(zip([i % 2 for i in range(8, 0, -1)],
+                                         list(range(8, 0, -1))))
+        elif str(request.user.username) == context['black_player']:
+            context['height'] = list(zip([i % 2 for i in range(1, 9)],
+                                         list(range(1, 9))))
+        context['width'] = list(zip([i % 2 for i in range(1, 9)],
+                                    [i for i in range(1, 9)], 'ABCDEFGH'))
+        context['form'] = self.form_class()
+
+    def post(self, request, pk=None, *args, **kwargs):
+        self.success_url = str(pk)
+        form = self.form_class(request.POST)
+        context = self.requests_get(request, pk)
+        if form.is_valid():
+            return self._patch(request, pk, form)
+        else:
+            context['form'] = form
+            context = self._change_message(request, context,
+                                           'Illegal move. Try again')
+            return self.render_to_response(context)
+
+    def _patch(self, request, pk, form):
+        response = self.make_turn_request(request, pk, form)
+        context = self.requests_get(request, pk)
+        context['response'] = response.json()
+        if 'GAME END' in response.json():
+            self._game_end(request, response)
+        elif 'ERROR MESSAGE' in response.json():
+            self._change_message(request, context,
+                                 response.json()['ERROR MESSAGE'])
+        else:
+            pass
+        return self.render_to_response(context)
+
+    @staticmethod
+    def make_turn_request(request, pk, form):
+        width = 'abcdefgh'
+        start_point = list(form.cleaned_data['start'])
+        start_point = [int(start_point[1]),
+                       width.index(start_point[0].lower()) + 1]
+        end_point = list(form.cleaned_data['end'])
+        end_point = [int(end_point[1]),
+                     width.index(end_point[0].lower()) + 1]
+        data = {"turn": [start_point, end_point]}
+        response = requests.patch(
+            'http://127.0.0.1:8000/server/games/{}/'.format(pk),
+            json=data, headers=tokenize_headers(request))
+        return response
+
+    def _game_end(self, request, response):
+        pass
+
+    @staticmethod
+    def _change_message(request, context, message):
+        if request.user.username == context['white_player']:
+            context['white_message'] = message
+        elif request.user.username == context['black_player']:
+            context['black_message'] = message
         return context
 
     # @staticmethod

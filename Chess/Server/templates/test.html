@@ -1,0 +1,70 @@
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr;">
+    <div class="centered">
+      <div class="card" style="width:200px; margin:0 auto;
+      border-radius:20px; background: khaki;">
+        <div class="card-body">
+            <p>White - {{game.white_player}}</p>
+            <p>Black - you</p>
+          <a type="button" class="btn btn-warning" href="{{game.id}}">Play</a>
+        </div>
+      </div>
+      <div class="card" style="width:200px; margin:0 auto;
+      border-radius:20px; background: khaki;">
+        <div class="card-body">
+            <p>White - {{game.white_player}}</p>
+            <p>Black - you</p>
+          <a type="button" class="btn btn-warning" href="{{game.id}}">Play</a>
+        </div>
+      </div>
+      <div class="card" style="width:200px; margin:0 auto;
+      border-radius:20px; background: khaki;">
+        <div class="card-body">
+            <p>White - {{game.white_player}}</p>
+            <p>Black - you</p>
+          <a type="button" class="btn btn-warning" href="{{game.id}}">Play</a>
+        </div>
+      </div>
+      <div class="card" style="width:200px; margin:0 auto;
+      border-radius:20px; background: khaki;">
+        <div class="card-body">
+            <p>White - {{game.white_player}}</p>
+            <p>Black - you</p>
+          <a type="button" class="btn btn-warning" href="{{game.id}}">Play</a>
+        </div>
+      </div>
+      <div class="card" style="width:200px; margin:0 auto;
+      border-radius:20px; background: khaki;">
+        <div class="card-body">
+            <p>White - {{game.white_player}}</p>
+            <p>Black - you</p>
+          <a type="button" class="btn btn-warning" href="{{game.id}}">Play</a>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class='col'>
+        <table>
+          <tr><th colspan="2">Users to play with</th></tr>
+          <tr>
+            <td>{{user.username}}</td>
+            <td>
+              <a href="{% url 'new game' username=user.username %}" class="btn btn-dark" type='button'>Play</a>
+            </td>
+          </tr>
+          <tr>
+            <td>{{user.username}}</td>
+            <td>
+              <a href="{% url 'new game' username=user.username %}" class="btn btn-dark" type='button'>Play</a>
+            </td>
+          </tr>
+          <tr>
+            <td>{{user.username}}</td>
+            <td>
+              <a href="{% url 'new game' username=user.username %}" class="btn btn-dark" type='button'>Play</a>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>

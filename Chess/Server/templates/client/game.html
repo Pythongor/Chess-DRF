@@ -1,36 +1,92 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
+{% load bootstrap %}
 
 {% block title %}
 Chess - game
 {% endblock %}
 
 {% block content %}
+{% if status == 'INVITED' %}
 <div class="centered">
-<table>
-{% for hindex, row in height %}
-  <tr>
-  {% for windex, column, letter in width %}
-    {% if windex == 0 and hindex == 0 or windex == 1 and hindex == 1 %}
-      <td style="background: firebrick">
-    {% else %}
-      <td style="background: khaki">
+  <div class="card">
+    {% if request.user.username == white_player %}
+      <p>Wait while {{black_player}} accept/deny your invite or
+        withdraw it yourself</p>
+    <a href="{% url 'delete' pk=id %}" class="button">Withdraw</a>
+    {% elif request.user.username == black_player %}
+      <p>You are invited to play game by {{white_player}}</p>
+    <div class="btn-group">
+      <a href="{% url 'accept' pk=id %}" class="btn btn-success">Accept</a>
+      <a href="{% url 'delete' pk=id %}" class="btn btn-danger">Deny</a>
+    </div>
     {% endif %}
-    {% for height, width, role in white_figures %}
-      {% if height == row and width == column %}
-        <img src="/static/figures/white {{role}}.png" alt="">
-      {% endif %}
-    {% endfor %}
-    {% for height, width, role in black_figures %}
-      {% if height == row and width == column %}
-        <img src="/static/figures/black {{role}}.png" alt="">
-      {% endif %}
-    {% endfor %}
-<!--      {{column}}{{row}}{{hindex}}{{windex}}-->
-    </td>
-  {% endfor %}
-  </tr>
-{% endfor %}
-</table>
+  </div>
 </div>
+{% elif status == 'STARTED' %}
+<div class="centered">
+  <table>
+  <tr>
+    <td class="corner_border"></td>
+    {% for windex, column, letter in width %}
+      <td class="width_border">{{letter}}</td>
+    {% endfor %}
+    <td class="corner_border"></td>
+  </tr>
+  {% for hindex, row in height %}
+    <tr>
+    <td class="height_border">{{row}}</td>
+    {% for windex, column, letter in width %}
+      {% if windex == 0 and hindex == 0 or windex == 1 and hindex == 1 %}
+        <td class="dark">
+      {% else %}
+        <td class="light">
+      {% endif %}
+      {% for height, width, role in white_figures %}
+        {% if height == row and width == column %}
+          <img class="figure" src="/static/figures/white {{role}}.png" alt="">
+        {% endif %}
+      {% endfor %}
+      {% for height, width, role in black_figures %}
+        {% if height == row and width == column %}
+          <img class="figure" src="/static/figures/black {{role}}.png" alt="">
+        {% endif %}
+      {% endfor %}
+      </td>
+    {% endfor %}
+    <td class="height_border">{{row}}</td>
+    </tr>
+  {% endfor %}
+    <tr>
+      <td class="corner_border"></td>
+      {% for windex, column, letter in width %}
+        <td class="width_border">{{letter}}</td>
+      {% endfor %}
+      <td class="corner_border"></td>
+    </tr>
+  </table>
+  <div class="card">
+    <h3><span class="white">{{white_player}}</span> <i>vs</i>
+      <span class="black">{{black_player}}</span></h3>
+    <form action="" method="POST">
+      {% if request.user.username == white_player %}
+      <h4>{{white_message}}</h4>
+    {% elif request.user.username == black_player %}
+      <h4>{{black_message}}</h4>
+    {% endif %}
+      {% csrf_token %}
+       <div class="form-row">
+      {{form|bootstrap}}
+      </div>
+      {% buttons %}
+        <div class="centered_submit">
+        <button type="submit" class="btn btn-dark">Move</button>
+        <input type="hidden" name="next" value="/client/games/" />
+        </div>
+      {% endbuttons %}
+    </form>
+  </div>
+  {{response}}
+</div>
+{% endif %}
 {% endblock %}

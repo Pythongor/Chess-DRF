@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'bootstrap4',
+    'bootstrapform',
     'accounts',
     'server',
     'client',
