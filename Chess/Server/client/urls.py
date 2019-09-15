@@ -11,4 +11,5 @@ urlpatterns = [
     path('games/invite/<int:pk>', views.InvitedGame.as_view, name='invited'),
     path('games/delete/<int:pk>', views.delete, name='delete'),
     path('games/accept_invite/<int:pk>', views.accept_invite, name='accept'),
+    path('nothing/<url>/<pk>', views.nothing, name='nothing'),
 ]

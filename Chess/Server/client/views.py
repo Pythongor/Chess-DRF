@@ -1,4 +1,5 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, reverse
+from django.http import HttpResponseRedirect, HttpResponse
 from django.core.paginator import Paginator
 from django.views.generic import TemplateView, FormView
 
@@ -7,6 +8,10 @@ from rest_framework.authtoken.models import Token
 import requests
 
 from .forms import PlayerMoveForm
+
+
+def nothing(request, url, pk):
+    return redirect('/client/'+url+'/'+str(pk))
 
 
 def tokenize_headers(request, headers=None):
@@ -138,7 +143,8 @@ class GameView(FormView):
                                  response.json()['ERROR MESSAGE'])
         else:
             pass
-        return self.render_to_response(context)
+        return HttpResponseRedirect(reverse(
+            "nothing", args=['games', str(pk)]))
 
     @staticmethod
     def make_turn_request(request, pk, form):
@@ -165,7 +171,3 @@ class GameView(FormView):
         elif request.user.username == context['black_player']:
             context['black_message'] = message
         return context
-
-    # @staticmethod
-    # def tokenize_headers(headers):
-    #     token =
