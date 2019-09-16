@@ -60,7 +60,8 @@ class GameViewSet(viewsets.ViewSet):
         elif request.user == game.white_player:
             return Response({'Wait': 'game #{} wait for black player'.format(game.id)})
         else:
-            return Response({'Error': 'it is not your game'}, status=HTTP_403_FORBIDDEN)
+            return Response({'Error': 'it is not your game'},
+                            status=HTTP_403_FORBIDDEN)
 
     @staticmethod
     def start_game(game):
@@ -93,7 +94,8 @@ class GameViewSet(viewsets.ViewSet):
             game.delete()
             return Response({'invite #{}'.format(game_id): 'denied'})
         else:
-            return Response({'Error': 'it is not your game'}, status=HTTP_403_FORBIDDEN)
+            return Response({'Error': 'it is not your game'},
+                            status=HTTP_403_FORBIDDEN)
 
     def retrieve(self, request, pk=None):
         queryset = Game.objects.all()
@@ -121,7 +123,8 @@ class GameViewSet(viewsets.ViewSet):
         black_player = get_object_or_404(
             User, username=request.data.get('black_player')
         )
-        game = Game.objects.create(white_player=request.user, black_player=black_player)
+        game = Game.objects.create(white_player=request.user,
+                                   black_player=black_player)
         return Response(
             {
                 'id': game.id,

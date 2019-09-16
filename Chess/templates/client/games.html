@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block title %}
+Chess - games
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+<div class="row">
+  <div class="col-6">
+      <div class="container justify-content-center align-items-center"
+           style="margin: 20px">
+  {% if games.has_other_pages %}
+      <ul class="pagination">
+    {% if games.has_previous %}
+      <li><a href="?page={{ games.previous_page_number }}" type="button"
+             class="btn btn-warning">&laquo;</a></li>
+    {% else %}
+      <li type="button" class="btn btn-warning disabled">&laquo;</li>
+    {% endif %}
+    {% for i in games.paginator.page_range %}
+      {% if games.number == i %}
+        <li type="button" class="btn btn-warning active">{{i}}</li>
+      {% else %}
+        <li><a href="?page={{ i }}" type="button"
+               class="btn btn-warning">{{i}}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if games.has_next %}
+      <li><a href="?page={{ games.next_page_number }}" type="button"
+             class="btn btn-warning">&raquo;</a></li>
+    {% else %}
+      <li type="button" class="btn btn-warning disabled">&raquo;</li>
+    {% endif %}
+  </ul>
+  {% endif %}
+        {% for game in games %}
+          {% if game.status == 'STARTED' %}
+            <div class="card" style="width:400fr;
+            border-radius:20px; background: khaki;">
+          {% elif game.status == 'INVITED' %}
+            <div class="card" style="width:400fr;
+            border-radius:20px; background: paleturquoise;">
+          {% endif %}
+            <div class="card-body">
+              <h3>game #{{game.id}}</h3>
+              {% if game.white_player == request.user.username %}
+                <p class="white">White - you</p>
+                <p class="black">Black - {{game.black_player}}</p>
+              {% elif game.black_player == request.user.username %}
+                <p class="white">White - {{game.white_player}}</p>
+                <p class="black">Black - you</p>
+              {% endif %}
+              <a type="button" class="btn btn-warning" href="{{game.id}}">Play</a>
+            </div>
+          </div>
+      {% endfor %}
+    </div>
+      </div>
+    <div class="col-4">
+      <div class='centered'>
+        <table style='width: 200px'>
+          <tr style="height: 50px;">
+            <th colspan="2">Users to play with</th></tr>
+          {% for user in users %}
+            {% if user.username != request.user.username %}
+              <tr style="height: 100px">
+                <td>{{user.username}}</td>
+                <td>
+                  <a href="{% url 'new game' username=user.username %}" class="btn btn-dark" type='button'>Play</a>
+                </td>
+              </tr>
+            {% endif %}
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock %}
