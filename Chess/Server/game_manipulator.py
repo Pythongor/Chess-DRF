@@ -73,6 +73,7 @@ class GameManipulator:
             if i in command:
                 self._switch_players()
                 response = actions[i](command[i])
+                self._reset_en_passants()
                 return response
 
     def _change_message(self, command):
@@ -136,3 +137,10 @@ class GameManipulator:
         attacked.delete()
         attacker = self.checker.get_figure(turn[0], False)
         attacker.update(height=turn[2][0], width=turn[2][1])
+
+    def _reset_en_passants(self):
+        en_passants = Figure.objects.filter(game=self.game, status='EN PASSANT',
+                                            is_white=not self.game.white_turn)
+        for i in en_passants:
+            i.status = 'NORMAL'
+            i.save()

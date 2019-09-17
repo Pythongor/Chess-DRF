@@ -10,7 +10,7 @@ class GameChecker:
             return self._end_of_game()
         elif self.check_checkup():
             return {'ERROR MESSAGE': 'Check! Try again.'}
-        elif 'ERROR MESSAGE' in self.create_command(turn):
+        if 'ERROR MESSAGE' in self.create_command(turn):
             return self.create_command(turn)
         else:
             return self.create_command(turn)
@@ -18,15 +18,21 @@ class GameChecker:
     def _end_of_game(self):
         if self._mate_checkup():
             if self.check_checkup():
-                return {'GAME END': 'CHECKMATE'}
+                return {'GAME END': 'CHECKMATE',
+                        'WINNER': self.game.white_player.username if not
+                        self.game.white_turn else self.game.black_player.username}
             else:
-                return {'GAME END': 'STALEMATE'}
+                return {'GAME END': 'DRAW'}
         elif self._insufficient_material_checkup():
-            return {'GAME END': 'INSUFFICIENT DRAW'}
+            return {'GAME END': 'DRAW'}
 
     def _mate_checkup(self):
         coordinates = [[i, j] for j in range(1, 9) for i in range(1, 9)]
         figures = Figure.objects.filter(game=self.game, is_white=self.game.white_turn)
+        king = Figure.objects.filter(game=self.game, is_white=self.game.white_turn,
+                                     role='king').exists
+        if not king:
+            return True
         for figure in figures:
             for coord in coordinates:
                 virtual = Game(status='VIRTUAL', white_player=self.game.white_player,
@@ -40,11 +46,15 @@ class GameChecker:
         return True
 
     def check_checkup(self):
-        king = Figure.objects.get(game=self.game, role='king',
-                                  is_white=self.game.white_turn)
+        print(self.game.white_turn)
+        try:
+            king = Figure.objects.get(game=self.game, role='king',
+                                      is_white=self.game.white_turn)
+        except Figure.DoesNotExist:
+            return False
         print([king.height, king.width])
         response = self._hit_checkup([king.height, king.width])
-        print(response)
+        # print(response)
         return response
 
     def _insufficient_material_checkup(self):
@@ -185,7 +195,7 @@ class GameChecker:
         figures = Figure.objects.filter(game=self.game, is_white=not self.game.white_turn)
         for i in figures:
             command = self.create_command([[i.height, i.width], coord], False)
-            # print('figure: ', i.height, i.width, command)
+            print('figure: ', i.height, i.width, command)
             if 'ERROR MESSAGE' not in command:
                 return True
         return False

@@ -5,7 +5,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='client/enter')),
+    path('', RedirectView.as_view(url='client/register')),
     # path('admin/', admin.site.urls),
     path('server/', include('server.urls')),
     path('client/', include('client.urls')),

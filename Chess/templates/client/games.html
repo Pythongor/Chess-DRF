@@ -63,6 +63,10 @@ Chess - games
     <div class="col-4">
       <div class='centered'>
         <table style='width: 200px'>
+          <tr><td colspan="2"><a href="{% url 'enter' %}" type="button"
+                                 class="btn btn-warning">Login</a></td></tr>
+          <tr><td colspan="2"><a href="{% url 'register' %}" type="button"
+                                 class="btn btn-warning">Register</a></td></tr>
           <tr style="height: 50px;">
             <th colspan="2">Users to play with</th></tr>
           {% for user in users %}
@@ -74,6 +78,8 @@ Chess - games
                 </td>
               </tr>
             {% endif %}
+          {% empty %}
+          <tr style="height: 100px"><td colspan="2">You are lonely ((</td></tr>
           {% endfor %}
         </table>
       </div>

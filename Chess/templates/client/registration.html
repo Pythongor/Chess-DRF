@@ -11,7 +11,10 @@
       {% csrf_token %}
       {% bootstrap_form user_form layout='inline' %}
       {% buttons %}
-      <button type="submit" class="btn btn-dark">Submit</button>
+      <div>
+      <a href="{% url 'enter' %}" type="button"
+                                 class="btn btn-warning">Login</a>
+      <button type="submit" class="btn btn-dark">Register</button></div>
       {% endbuttons %}
     </form>
   </div>

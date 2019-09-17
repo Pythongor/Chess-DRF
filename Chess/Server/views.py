@@ -91,7 +91,6 @@ class GameViewSet(viewsets.ViewSet):
             if manipulator.next_turn_modeling(data):
                 data = {'ERROR MESSAGE': 'Check! Try again.'}
             else:
-                print('no check')
                 manipulator.make_move(data)
         return data
 

@@ -23,6 +23,12 @@ Chess - game
     {% endif %}
   </div>
 </div>
+{% elif status == 'DRAW' %}
+  DRAW
+{% elif status == 'WHITE WIN' %}
+  WHITE WIN
+{% elif status == 'BLACK WIN' %}
+  BLACK WIN
 {% elif status == 'STARTED' %}
 <div class="centered">
   <table>
@@ -73,7 +79,8 @@ Chess - game
        style="margin: 5px">
     Register</a>
     <a type="button" class="btn btn-warning" href="."
-       style="margin-bottom: 15px; margin-top: 5px">Back to games</a>
+       style="margin-bottom: 10px; margin-top: 5px">Back to games</a>
+    <h3 style="margin-bottom: 15px">Game #{{id}}</h3>
     <h3 style="margin-bottom: 20px;"><span class="white">{{white_player}}</span>
       <i>vs </i><span class="black">{{black_player}}</span></h3>
     <form action="" method="POST">
