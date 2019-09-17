@@ -74,16 +74,26 @@ class GameViewSet(viewsets.ViewSet):
         if request.user.username != str(player):
             data = {'ERROR MESSAGE': 'Wait your turn!'}
         else:
-            checker = GameChecker(game)
-            data = checker.patch_request(request.data['turn'])
-            if any(['ERROR MESSAGE', 'GAME']) not in data:
-                self.make_move(game, data)
+            data = self.make_move(game, request.data['turn'])
         return Response(data)
 
     @staticmethod
     def make_move(game, command):
-        manipulator = GameManipulator(game)
-        manipulator.make_move(command)
+        checker = GameChecker(game)
+        data = checker.patch_request(command)
+        if 'ERROR MESSAGE' in data:
+            # self.change_message(game, data)
+            pass
+        elif 'GAME END' in data:
+            pass
+        else:
+            manipulator = GameManipulator(game)
+            if manipulator.next_turn_modeling(data):
+                data = {'ERROR MESSAGE': 'Check! Try again.'}
+            else:
+                print('no check')
+                manipulator.make_move(data)
+        return data
 
     @staticmethod
     def destroy(request, pk=None):
@@ -105,6 +115,12 @@ class GameViewSet(viewsets.ViewSet):
         if context['status'] != 'INVITED':
             context['black_figures'] = self.get_figures_data(game, False)
             context['white_figures'] = self.get_figures_data(game, True)
+            checker = GameChecker(game)
+            if checker.check_checkup():
+                if game.white_turn:
+                    context['white_message'] = 'Check!'
+                else:
+                    context['black_message'] = 'Check!'
         return Response(context)
 
     @staticmethod

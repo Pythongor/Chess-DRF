@@ -69,7 +69,7 @@ class Figure(models.Model):
         if (abs(difference[0]), abs(difference[1])) in ((1, 2), (2, 1)):
             return {'CHECKUP': 'MOVE ATTACK', 'COORDINATES': pos}
         else:
-            return {'ERROR': 'ILLEGAL MOVE'}
+            return {'ERROR': 'ILLEGAL MOVE', 'CHECKUP': None}
 
     def _king_move_possibility(self, pos):
         self_pos = [getattr(self, 'height'), getattr(self, 'width')]

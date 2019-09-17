@@ -7,8 +7,8 @@ Chess - game
 {% endblock %}
 
 {% block content %}
-{% if status == 'INVITED' %}
 <div class="centered">
+{% if status == 'INVITED' %}
   <div class="card">
     {% if request.user.username == white_player %}
       <p>Wait while {{black_player}} accept/deny your invite or
@@ -66,8 +66,16 @@ Chess - game
     </tr>
   </table>
   <div class="card">
-    <h3><span class="white">{{white_player}}</span> <i>vs</i>
-      <span class="black">{{black_player}}</span></h3>
+    <a href="{% url 'enter' %}" type="button" class="btn btn-warning"
+       style="margin: 5px">
+    Login</a>
+    <a href="{% url 'register' %}" type="button" class="btn btn-warning"
+       style="margin: 5px">
+    Register</a>
+    <a type="button" class="btn btn-warning" href="."
+       style="margin-bottom: 15px; margin-top: 5px">Back to games</a>
+    <h3 style="margin-bottom: 20px;"><span class="white">{{white_player}}</span>
+      <i>vs </i><span class="black">{{black_player}}</span></h3>
     <form action="" method="POST">
       {% if request.user.username == white_player %}
       <h4>{{white_message}}</h4>

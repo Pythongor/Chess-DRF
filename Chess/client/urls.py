@@ -4,8 +4,9 @@ from django.contrib.auth.views import LoginView
 
 
 urlpatterns = [
-    path('enter', LoginView.as_view(template_name='client/login.html')),
-    path('games/', views.GameListView.as_view()),
+    path('enter', LoginView.as_view(template_name='client/login.html'), name='enter'),
+    path('register', views.registration, name='register'),
+    path('games/', views.GameListView.as_view(), name='games'),
     path('games/<int:pk>', views.GameView.as_view()),
     path('games/new_game/<username>', views.invite, name='new game'),
     path('games/invite/<int:pk>', views.InvitedGame.as_view, name='invited'),

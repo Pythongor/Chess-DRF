@@ -2,6 +2,9 @@ from django.shortcuts import redirect, render, reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.paginator import Paginator
 from django.views.generic import TemplateView, FormView
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 from rest_framework.authtoken.models import Token
 
@@ -22,6 +25,22 @@ def tokenize_headers(request, headers=None):
     return headers
 
 
+def registration(request):
+    context = {}
+    form = UserCreationForm()
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            new_user = User.objects.create_user(username=username,
+                                                password=password)
+            login(request, authenticate(username=username, password=password))
+            return redirect('games')
+    context['user_form'] = form
+    return render(request, 'client/registration.html', context)
+
+
 class InvitedGame(TemplateView):
     template_name = 'client/invited_game.html'
 
@@ -35,7 +54,6 @@ class InvitedGame(TemplateView):
             'http://127.0.0.1:8000/server/games/{}'.format(pk),
             headers=tokenize_headers(request))
         context = context.json()
-        print(context)
         return context
 
 
@@ -103,10 +121,13 @@ class GameView(FormView):
     def _figure_dict_refactoring(context, white):
         color = 'white' if white else 'black'
         figures = []
+        # statuses = []
         for figure in context[color + '_figures']:
             figures.append([figure['height'], figure['width'],
                             figure['role']])
+            # statuses.append(figure['status'])
         context[color + '_figures'] = figures
+        # context['statuses'] = statuses
         return context
 
     def _add_representation_content(self, request, context):

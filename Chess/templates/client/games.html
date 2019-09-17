@@ -55,6 +55,8 @@ Chess - games
               <a type="button" class="btn btn-warning" href="{{game.id}}">Play</a>
             </div>
           </div>
+      {% empty %}
+        <div class="centered"><div class="card"><h4>No games yet</h4></div></div>
       {% endfor %}
     </div>
       </div>
