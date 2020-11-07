@@ -1,0 +1,425 @@
+body {
+  background-image: linear-gradient(120deg, brown,
+  indianred, lightcoral, salmon);
+  margin: 0;
+  height: 100vh;
+}
+
+.centered {
+  display: flex;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* div.centered {
+    margin: auto;
+    width: 400px;
+    text-align: center} */
+
+.centered_submit {
+    width: 100%;
+    height: 100%;
+    top: 50;
+    left: 0;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 0;
+}
+.centered-horizontal {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+}
+
+div.col-8 {
+width: 260px; height: 100px;
+border-style: solid;
+border-image-width: 15px;
+border-image-source: url(figures/white pawn.png);
+border-image-slice: 30;
+border-image-repeat: round;
+}
+
+input [type='submit'] {
+    background: red;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    text-align: center;
+}
+
+p {
+    font-family: 'Times New Roman';
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.white {
+    font-style: bold;
+    color: peru;
+    background: white;
+    border-radius: 5px;
+    border: groove 2px brown;
+}
+
+.black {
+    font-style: bold;
+    color: peru;
+    background: black;
+    border-radius: 5px;
+    border: groove 2px brown;
+}
+
+label {
+    display: block;
+    text-align: center;
+    line-height: 150%;
+    font-size: .85em;
+}
+
+.act-form {
+    padding: 10px;
+    background: brown;
+    border: ridge 2px indianred;
+    border-radius: 5px;
+    box-shadow: 2px 3px 3px rgba(0,0,0,0.7);
+}
+
+.form-control.my {
+text-align-last: center
+}
+
+.form-control.date {
+width: 100px;
+text-align: center
+}
+
+.custom-file-label.my {
+text-align: left
+}
+
+.lcorners {
+  border-radius: 20px 20px 20px 0px;
+  background: #00bb00;
+  margin-left: 2%;
+  margin-top: 2%;
+  width: 200px;
+  padding-left: 7px;
+  padding-right: 10px;
+}
+
+.rcorners {
+  border-radius: 20px 20px 0px 20px;
+  background: #ff00ff;
+  margin-left: auto;
+  margin-right: 2%;
+  margin-top: 2%;
+  width: 200px;
+  padding-left: 7px;
+  padding-right: 10px;
+}
+
+table {
+    border-collapse: collapse !important;
+    border:ridge brown 3px;
+    box-shadow: 5px 10px 10px rgba(0,0,0,0.7);
+    background: coral;
+    }
+
+tr.player {
+    border: solid 2px brown;
+}
+
+th {
+    border: solid 2px brown;
+    text-align: center;
+}
+
+td {
+    height: 50px;
+    text-align: center;
+}
+
+td.light {
+    border: solid black 2px;
+    background-color: khaki
+}
+
+td.dark {
+    border: solid black 2px;
+    background-color: firebrick;
+}
+
+td.height_border {
+    width: 30px;
+    background-color: maroon;
+    color:orange
+}
+
+td.width_border {
+    height: 20px;
+    background-color: maroon;
+    color: yellowgreen;
+}
+
+td.corner_border {
+    width: 30px;
+    height: 30px;
+    background-color: maroon;
+}
+
+img.figure {
+  transition-duration: .5s;
+  -webkit-filter: drop-shadow(5px 5px 0.8px #722);
+}
+
+img.figure:hover {
+  -o-transform: translateY(-20px);
+  -ms-transform: translateY(-20px);
+  -moz-transform: translateY(-20px);
+  -webkit-transform: translateY(-20px);
+  transform: translateY(-20px);
+  -webkit-filter: drop-shadow(10px 10px 2px #722);
+}
+
+img.figure-enemy {
+  -webkit-filter: drop-shadow(5px 5px 0.8px #722);
+}
+
+img.bottle:hover {
+  -o-transform: rotate(120deg);
+  -ms-transform: rotate(120deg);
+  -moz-transform: rotate(120deg);
+  -webkit-transform: rotate(120deg);
+  transform: rotate(120deg);
+}
+
+div.card {
+  text-align: center;
+  display: flex;
+  float: left;
+  align-items: center;
+  justify-content: center;
+  background: darksalmon;
+  box-shadow: 5px 10px 10px rgba(0,0,0,0.7);
+  margin: 30px;
+  padding: 20px;
+  border-top-left-radius: 100% 20px;
+  border-bottom-right-radius: 100% 20px;
+  border-top: solid 5px brown;
+  border-bottom: solid 5px brown;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+}
+
+div.card h3 {
+    color: indianred;
+}
+
+div.card h2, p {
+    color: darkred;
+}
+
+div.card h4 {
+    color: peachpuff;
+    width: 150px;
+    padding-bottom: 5px;
+    word-wrap: break-word;
+    margin: 5px;
+    background: brown;
+    border: ridge 2px indianred;
+    border-radius: 5px;
+    box-shadow: 2px 3px 3px rgba(0,0,0,0.7);
+}
+
+div.card button {
+    color: darkred;
+    margin: 5px;
+    padding: 10px;
+    background-image: linear-gradient(darkred, indianred, darkred);
+    border: inset 3px firebrick;
+    border-radius: 10px;
+}
+
+.card button:hover {
+    background-image: linear-gradient(Brown, LightCoral, Brown);
+    border-color: Crimson;
+}
+
+.card button:active {
+    color: FireBrick;
+    border: outset 3px firebrick;
+    background-image: linear-gradient(LightCoral, Brown);
+    padding: 10px;
+    -webkit-box-shadow: inset 4px 6px 5px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset 4px 6px 5px 0px rgba(0,0,0,0.75);
+    box-shadow: inset 4px 6px 5px 0px rgba(0,0,0,0.75);
+}
+
+div.item {
+  background: brown;
+  border: outset 2px darksalmon;
+  border-radius: 10px;
+  padding: 5px;
+}
+
+button:focus {
+    outline: none !important;
+}
+
+div.form-row {
+    display: flex;
+    align-items: center;
+    justify-content: center
+}
+
+#id_start.form-control,  #id_end.form-control{
+    width: 70px;
+}
+
+.black_name {
+    color: silver;
+    padding-bottom: 5px;
+    margin: 5px;
+    background: black;
+    border: ridge 2px silver;
+    border-radius: 5px;
+    box-shadow: 2px 3px 3px rgba(0,0,0,0.7);
+}
+
+.white_name {
+    color: grey;
+    padding-bottom: 5px;
+    margin: 5px;
+    background: white;
+    border: ridge 2px grey;
+    border-radius: 5px;
+    box-shadow: 2px 3px 3px rgba(0,0,0,0.7);
+}
+
+.bg-chess-navbar {
+    background-image: linear-gradient(darkred, indianred, darkred) !important;
+}
+
+.left-button {
+    border-style: groove !important;
+    border-width: 2px 0px 2px 2px !important;
+    border-radius: 10px 0px 0px 10px !important;
+    margin: 0px -4px 0px 0px !important;
+}
+
+.right-button {
+    border-style: groove !important;
+    border-width: 2px 2px 2px 0px !important;
+    border-radius: 0px 10px 10px 0px !important;
+    margin: 0px !important;
+}
+
+.center-button {
+    border-style: groove !important;
+    border-width: 2px 0px 2px 0px !important;
+    border-radius: 0px !important;
+    margin: 0px !important;
+}
+
+.lonely-button {
+    border-style: groove !important;
+    border-width: 2px !important;
+    border-radius: 10px !important;
+}
+
+.orange-button {
+    background-image: linear-gradient(Tomato, lightsalmon, Tomato) !important;
+    border-color: orangered !important;
+    color: black;
+}
+
+.orange-button:hover {
+    background-image: linear-gradient(orangered, lightsalmon, orangered) !important;
+}
+
+.orange-button:active {
+    background-image: linear-gradient(lightsalmon, orangered, lightsalmon) !important;
+}
+
+.grey-button {
+    background-image: linear-gradient(#406060, slategray, #406060) !important;
+    border-color: darkslategray !important;
+    color: black;
+}
+
+.grey-button:hover {
+    background-image: linear-gradient(darkslategray, slategray, darkslategray) !important;
+}
+
+.grey-button:active {
+    background-image: linear-gradient(slategray, darkslategray, slategray) !important;
+}
+
+.white-button {
+    background-image: linear-gradient(PowderBlue, white, PowderBlue);
+    border-color: white !important;
+    color: black;
+}
+
+.white-button:hover {
+    background-image: linear-gradient(LightSkyBlue, Gainsboro, LightSkyBlue)
+}
+
+.white-button:active {
+    background-image: linear-gradient(Gainsboro, LightSkyBlue, Gainsboro) !important;
+}
+
+.black-button {
+    background-image: linear-gradient(black, #400000, black) !important;
+    border-color: black !important;
+    color: indianred;
+}
+
+.black-button:hover {
+    background-image: linear-gradient(#202020, DarkRed, #202020) !important;
+}
+
+.black-button:active {
+    background-image: linear-gradient(DarkRed, #202020, DarkRed) !important;
+}
+
+.black-button::disabled,
+.black-button:[disabled] {
+    border-color: green !important;
+}
+
+/* HIDE RADIO */
+[type=radio] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* IMAGE STYLES */
+[type=radio] + img {
+  -webkit-box-shadow: inset 0px 0px 20px 5px rgba(0, 255, 0, 1);
+  cursor: pointer;
+}
+
+/* CHECKED STYLES */
+[type=radio]:checked + img {
+  -webkit-box-shadow: inset 0px 0px 20px 5px rgba(255, 0, 255, 1);
+}
+
+a {
+  color: black !important;
+}
+
+a:focus, a:hover {
+    text-decoration: none !important;
+}

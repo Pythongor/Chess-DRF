@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% load bootstrap4 %}
-{% load bootstrap %}
 
 {% block title %}
 Chess - game
@@ -91,7 +90,7 @@ Chess - game
     {% endif %}
       {% csrf_token %}
        <div class="form-row">
-      {{form|bootstrap}}
+      {{form}}
       </div>
       {% buttons %}
         <div class="centered_submit">

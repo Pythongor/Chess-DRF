@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% load templatetags %}
+{% block title %}
+| Sign Up
+{% endblock %}
+{% block content %}
+<div class="centered">
+  <div class="card">
+<h2>Sign up Form</h2>
+<form method="post">
+  {% csrf_token %}
+  {% if form.errors %}
+
+    {{ form.errors|get:'__all__' }}
+  {% endif %}
+    {% for field in form.visible_fields %}
+        {% if field.errors %}
+        {{ field.errors }}
+        {% endif %}
+          {{ field }}
+        <p>{{ field.label }}</p>
+    {% endfor %}
+  <button type="submit" class="orange-button alone-button btn" value="accept">Sign up</button>
+  </form>
+  </div>
+</div>
+{% endblock %}

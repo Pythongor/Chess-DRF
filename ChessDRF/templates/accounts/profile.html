@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load templatetags %}
+{% block title %}
+| {{ user.username }}
+{% endblock %}
+{% block content %}
+<div class="centered">
+  <div class="card">
+      <h4>{{ user.username }}<br></h4>
+      <img class="figure" src='{{user.photo}}'>
+      <p>Games played: {{ user.games_played }}<br>
+      Games won: {{ user.games_won }}<br>
+      Games tied: {{ user.games_tied }}<br>
+      Games lost: {{ user.games_lost }}</p>
+  </div>
+</div>
+{% endblock %}

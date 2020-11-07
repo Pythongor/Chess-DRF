@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}
+| Log in
+{% endblock %}
+{% block content %}
+{% load templatetags %}
+<div class="centered">
+  <div class="card">
+    <form method="POST">
+      {% csrf_token %}
+      {% if form.errors %}
+        {{ form.errors|get:'__all__' }}
+      {% endif %}
+      {% for field in form.visible_fields %}
+        {% if field.errors %}
+          {{ field.errors }}
+        {% endif %}
+        {{ field }}
+        <p>{{ field.label }}</p>
+      {% endfor %}
+      <input type="submit" name="sumbit" class="orange-button alone-button btn" value="accept">
+    </form>
+  </div>
+</div>
+{% endblock %}

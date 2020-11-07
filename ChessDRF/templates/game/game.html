@@ -1,0 +1,197 @@
+{% extends 'base.html' %}
+{% load templatetags %}
+{% block content %}
+<script src="/static/scripts.js"></script>
+<div class="centered">
+  {% with wp=game.white_player bp=game.black_player %}
+  {{game.status}}
+  {{request.user.id}}
+  {{wp.id}}
+  {{bp.id}}
+  {% if request.user.id != wp.id and request.user.id != bp.id %}
+    <div class="card">
+      <h2 style="margin-bottom: 50px">
+        <span class="black_name">{{bp.username}}</span><br>vs<br>
+        <span class="white_name">{{wp.username}}</span></h2>
+      {% if game.status in 'RTIS' %}
+        <h2>You can`t play this game</h2>
+      {% elif game.status == 'D' %}
+        <h2>This game ended in a draw.</h2>
+      {% elif game.status == 'W' %}
+        <h2>{{wp.username}} won.</h2>
+      {% elif game.status == 'B' %}
+        <h2>{{bp.username}} won.</h2>
+      {% endif %}
+    </div>
+  {% elif game.status == 'I' %}
+    <div class="card">
+      <h2 style="margin-bottom: 50px">
+        <span class="black_name">{{game.black_player.username}}</span><br>vs<br>
+        <span class="white_name">{{game.white_player.username}}</span></h2>
+      {% if wp.id == request.user.id and 'Waiting for' in game.white_message %}
+        <h3>{{game.white_message}}</h3>
+      {% elif bp.id == request.user.id and 'Waiting for' in game.black_message %}
+        <h3>{{game.black_message}}</h3>
+      {% else %}
+        {% if request.user.id == bp.id %}
+          <h3 style="width: 300px;">{{game.black_message}}</h3>
+        {% else %}
+          <h3 style="width: 300px;">{{game.white_message}}</h3>
+        {% endif %}
+        <div style="display: flex; flex-direction: row; margin-top: 20px;">
+          <form action="{% url 'game' id=game.id %}" method="post" style="margin-right: 50px">
+            {% csrf_token %}
+            <input type="hidden" name="initiation" value=True>
+            <input type="submit" class="submit_btn btn lonely-button orange-button" value="Accept" />
+          </form>
+          <form action="{% url 'game' id=game.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="initiation" value=False>
+            <input type="submit" class="submit_btn btn lonely-button grey-button" value="Decline" />
+          </form>
+        </div>
+      {% endif %}
+    </div>
+  {% elif game.status == 'R' %}
+    <div class="card">
+      <h2>This game invitation was denied</h2>
+    </div>
+  {% elif game.status in 'SDBWT' %}
+    {% if game.status == 'T' and request.user.id == wp.id and game.white_turn %}
+      <div class="card">
+        <h2 style="margin-bottom: 50px">
+          <span class="black_name">{{bp.username}}</span><br>vs<br>
+          <span class="white_name">{{wp.username}}</span>
+        </h2>
+        <h5>{{ game.white_message }}</h5>
+        <div>
+          <form action="{% url 'game' pk=game.id %}" method="post">
+            {% csrf_token %}
+            {% for figure in transformation_figures %}
+            <label>
+              <input type="radio" name="transformation" value="{{figure}}" checked>
+              <img src="/static/figures/white {{figure}}.png">
+            </label>
+            {% endfor %}<br>
+            <input type="submit" class="btn orange-button" value="accept">
+          </form>
+        </div>
+      </div>
+    {% elif game.status == 'T' and request.user.id == bp and not game.white_turn %}
+      <div class="card">
+        <h2 style="margin-bottom: 50px">
+          <span class="black_name">{{bp.username}}</span><br>vs<br>
+          <span class="white_name">{{wp.username}}</span>
+        </h2>
+        <h5>{{ game.black_message }}</h5>
+        <div>
+          <form action="{% url 'game' pk=game.id %}" method="post">
+            {% csrf_token %}
+            {% for figure in transformation_figures %}
+            <label>
+              <input type="radio" name="transformation" value="{{figure}}" checked>
+              <img src="/static/figures/black {{figure}}.png">
+            </label>
+            {% endfor %}<br>
+            <input type="submit" class="btn orange-button" value="accept">
+          </form>
+        </div>
+      </div>
+    {% else %}
+      <table width="550px" height="550px" style="table-layout: fixed; float: left;">
+        <tr>
+          <td class="corner_border"></td>
+          {% for column in columns %}
+            <td class="width_border">{{column}}</td>
+          {% endfor %}
+          <td class="corner_border"></td>
+        </tr>
+        {% for row in rows %}
+        {% cycle 1 0 as index silent %}
+          <tr>
+            <td class="height_border">{{row}}</td>
+            {% for column in columns %}
+              {% if index %}
+                {% cycle 'light' 'dark' as color silent %}
+              {% else %}
+                {% cycle 'dark' 'light' as color silent %}
+              {% endif %}
+              {% with position=column|concat:row %}
+              {% with figure=render_dict|get:position %}
+              {% if figure is not None %}
+                {% with figure_white=figure|get:"is_white" %}
+                {% if figure_white and request.user.id == wp.id %}
+                <td class="{{color}}" onclick="selectFigure(this.id)" id="{{column}}{{row}}">
+                  <img class="figure"
+                       src="/static/figures/{{figure_white|yesno:'white,black'}} {{figure|get:'role'}}.png">
+                </td>
+                {% elif not figure_white and request.user.id == bp.id %}
+                <td class="{{color}}" onclick="selectFigure(this.id)" id="{{column}}{{row}}">
+                  <img class="figure"
+                       src="/static/figures/{{figure_white|yesno:'white,black'}} {{figure|get:'role'}}.png">
+                </td>
+                {% else %}
+                <td class="{{color}}" onclick="selectPosition(this.id)" id="{{column}}{{row}}">
+                  <img class="figure-enemy"
+                       src="/static/figures/{{figure_white|yesno:'white,black'}} {{figure|get:'role'}}.png">
+                </td>
+                {% endif %}
+                {% endwith %}
+              {% else %}
+                <td class="{{color}}" onclick="selectPosition(this.id)" id="{{column}}{{row}}"></td>
+              {% endif %}
+              {% endwith %}
+              {% endwith %}
+            {% endfor %}
+            <td class="height_border">{{row}}</td>
+          </tr>
+        {% endfor %}
+        <tr>
+          <td class="corner_border"></td>
+          {% for column in columns %}
+            <td class="width_border">{{column}}</td>
+          {% endfor %}
+          <td class="corner_border"></td>
+        </tr>
+      </table>
+      <div class="card" style="width: 350px;">
+        <h2 style="margin-bottom: 50px">
+        <span class="black_name">{{bp.username}}</span><br>vs<br>
+        <span class="white_name">{{wp.username}}</span></h2>
+        {% if bp.id == request.user.id and game.white_turn %}
+          <h5>{{ game.black_message }}</h5>
+        {% elif wp.id == request.user.id and not game.white_turn %}
+          <h5>{{ game.white_message }}</h5>
+        {% elif game.status == 'S' %}
+          <script>window.postForm = true;</script>
+            {% if wp.id == request.user.id %}
+              <h5>{{ game.white_message }}</h5>
+            {% elif bp.id == request.user.id %}
+              <h5>{{ game.black_message }}</h5>
+            {% endif %}
+          <form action="{% url 'game' pk=game.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" value="M" name="end_game">
+            <input class="grey-button lonely-button" type="submit" value="Capitulate">
+          </form>
+          <form action="{% url 'game' pk=game.id %}" method="post" id="form">
+            {% csrf_token %}
+            <input type="hidden" id="startRow" name="start_row">
+            <input type="hidden" id="startColumn" name="start_column">
+            <input type="hidden" id="endColumn" name="end_column">
+            <input type="hidden" id="endRow" name="end_row">
+          </form>
+        {% else %}
+          {% if wp.id == request.user.id %}
+            <h5>{{ game.white_message }}</h5>
+          {% elif bp.id == request.user.id %}
+            <h5>{{ game.black_message }}</h5>
+          {% endif %}
+        {% endif %}
+      </div>
+    {% endif %}
+  {% endif %}
+  {% endwith %}
+</div>
+{% endblock %}
+

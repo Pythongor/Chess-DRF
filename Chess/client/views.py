@@ -58,7 +58,7 @@ class InvitedGame(TemplateView):
 
 
 class GameListView(TemplateView):
-    template_name = 'client/games.html'
+    template_name = 'client/home.html'
 
     def get(self, request, *a, **kw):
         context = requests.get('http://127.0.0.1:8000/server/games',

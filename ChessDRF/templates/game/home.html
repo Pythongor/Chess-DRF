@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="centered">
+  <div class="card">
+    <h4>Your games</h4><br>
+    <form action="{{request.path}}" method="post" class="form-inline" style="justify-content: center;">
+      {% csrf_token %}
+      <input type="text" name="games" class="form-control">
+      <input type="submit" value="Search" class="alone-button orange-button btn" style="margin-left: 5px;">
+    </form>
+    {% for game in object_list %}
+      <div class="item">
+        <h5>{{ game.white_player.username }} vs {{ game.black_player.username }}</h5>
+        <a href="{% url 'game' id=game.id %}"><button>Play</button></a>
+      </div>
+    {% empty %}
+      <p>No games found :(</p>
+    {% endfor %}
+    {% if page_obj.has_other_pages %}
+      <div style="display: flex; justify-content: center;">
+        {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}">
+            <button class="left-button black-button">&laquo;</button>
+          </a>
+        {% else %}
+          <button disabled class="left-button grey-button">&laquo;</button>
+        {% endif %}
+        {% for i in page_obj.paginator.page_range %}
+          {% if page_obj.number == i %}
+              <button class="center-button orange-button">{{ i }}</button>
+          {% else %}
+              <a href="?page={{ i }}">
+                <button class="center-button black-button">{{ i }}</button>
+              </a>
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">
+            <button class="right-button black-button">&raquo;</button>
+          </a>
+        {% else %}
+          <button disabled class="right-button grey-button">&raquo;</button>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+  <div class="card">
+    <h4>Players you can play with</h4><br>
+    <form action="{{request.path}}" method="post" class="form-inline" style="justify-content: center;">
+      {% csrf_token %}
+      <input type="text" name="users" class="form-control">
+      <input type="submit" value="Search" class="alone-button orange-button btn" style="margin-left: 5px;">
+    </form>
+    {% for user in not_started_game_users %}
+      <div class="item">
+        <img src="{{user.photo}}" alt="">
+        <h5>{{ user.username }}</h5>
+        <form action="new_game" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="opponent_id" value={{user.id}}>
+          <input type="hidden" name="creator_is_white" value=True>
+          <input type="submit" class="submit_btn btn lonely-button black-button" value="Invite to play with black set" />
+        </form>
+        <form action="new_game" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="opponent_id" value={{user.id}}>
+          <input type="hidden" name="creator_is_white" value=False>
+          <input type="submit" class="submit_btn btn lonely-button white-button" value="Invite to play with white set" />
+        </form>
+      </div>
+    {% empty %}
+      <p>No users. Hmmm...</p>
+    {% endfor %}
+    {% if not_started_game_users.has_other_pages %}
+      <div style="display: flex; justify-content: center;">
+        {% if not_started_game_users.has_previous %}
+          <a href="?not_started_game_users={{ not_started_game_users.previous_page_number }}">
+            <button class="left-button black-button">&laquo;</button>
+          </a>
+        {% else %}
+          <a href="#">
+            <button disabled class="left-button grey-button">&laquo;</button>
+          </a>
+        {% endif %}
+        {% for i in not_started_game_users.paginator.page_range %}
+          {% if not_started_game_users.number == i %}
+            <a href="#">
+              <button class="center-button orange-button">{{ i }}</button>
+            </a>
+          {% else %}
+            <a href="?not_started_game_users_page={{ i }}">
+              <button class="center-button black-button">{{ i }}</button>
+            </a>
+          {% endif %}
+        {% endfor %}
+        {% if not_started_game_users.has_next %}
+          <a href="?not_started_game_users_page={{ not_started_game_users.next_page_number }}">
+            <button class="right-button black-button">&raquo;</button>
+          </a>
+        {% else %}
+          <a href="#">
+            <button disabled class="right-button grey-button">&raquo;</button>
+          </a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+<!--    {% for user in users %}-->
+<!--    <div class="card">-->
+<!--        {{ profile.user.username }}-->
+<!--        <button type="submit" value={{profile.user.id}} onclick="location.href='{% url 'game' %}'">Invite</button>-->
+<!--    </div>-->
+<!--    {% endfor %}-->
+</div>
+{% endblock %}
