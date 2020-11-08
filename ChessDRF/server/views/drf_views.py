@@ -72,7 +72,8 @@ class GameViewSet(viewsets.ModelViewSet):
         games = Game.objects.filter(Q(status__in='IST', test=False) & search).order_by('id')
         return Response(self.serializer_class(games, many=True).data)
 
-    def list(self, request, users=None, games=None, **kwargs):
+    def list(self, request, **kwargs):
+        users, games = request.data.get('users'), request.data.get('games')
         self.object_list = self.get_queryset(games).data
         context = {'object_list': self.object_list}
         unfinished = self.get_queryset().data
@@ -144,7 +145,7 @@ def register(request):
         user = user_serializer.save(**kwargs)
 
     signals.user_registered.send(sender=None, user=user, request=request)
-    output_serializer_class = registration_settings.REGISTER_OUTPUT_SERIALIZER_CLASS  # noqa: E501
+    output_serializer_class = registration_settings.REGISTER_OUTPUT_SERIALIZER_CLASS
     output_serializer = output_serializer_class(
         instance=user,
         context={'request': request},

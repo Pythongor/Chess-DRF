@@ -31,17 +31,18 @@ class GamesView(ListView, LoginMixin):
     def get(self, request, *args, **kwargs):
         users = request.GET.get('users_search')
         games = request.GET.get('games_search')
-        # print(users, games, request.POST, request.GET)
         context = self.get_context_data(users, games)
         self.object_list = context['object_list']
+        context['not_started_game_users'].sort(key=lambda x: not x['is_online'])
+        # print(context['not_started_game_users'])
         context['not_started_game_users'] = self.paginate(
             context['not_started_game_users'], 2, 'not_started_game_users')
         return self.render_to_response(context)
 
     def get_context_data(self, users=None, games=None, **kwargs):
         url = 'http://127.0.0.1:8000/server/games/'
-        data = {'users': users, games: 'games'}
-        response = requests.get(url=url, data=data, headers=self.request.headers)
+        data = {'users': users, 'games': games}
+        response = requests.get(url=url, data=json.dumps(data), headers=self.request.headers)
         return response.json()
 
     def paginate(self, objects_list, per_page, object_name):
@@ -58,7 +59,7 @@ class GamesView(ListView, LoginMixin):
     def post(self, request, *args, **kwargs):
         users = request.POST.get('users', '')
         games = request.POST.get('games', '')
-        return redirect(f'/home?users_search={users}&games_search={games}', users=users, games=games)
+        return redirect(f'/client/home?users_search={users}&games_search={games}', users=users, games=games)
 
 
 @method_decorator(login_required, name='dispatch')
