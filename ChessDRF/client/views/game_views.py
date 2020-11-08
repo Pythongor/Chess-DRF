@@ -79,7 +79,6 @@ class NewGameView(LoginMixin):
 
 @method_decorator(login_required, name='dispatch')
 class GameView(DetailView, LoginMixin):
-    # model = Game
     object = None
     template_name = 'game/game.html'
     context_object_name = 'game'
@@ -90,57 +89,22 @@ class GameView(DetailView, LoginMixin):
             url = f'http://127.0.0.1:8000/server/games/{self.object["id"]}/'
             data = {'initiation': request.POST.get('initiation'), 'game_id': self.object["id"]}
             response = requests.patch(url=url, json=json.dumps(data), headers=self.request.headers)
-        # if request.POST.get('initiation'):
-        #     return self._game_init(request)
-        # elif request.POST.get('end_game'):
+        elif request.POST.get('end_game'):
+            url = f'http://127.0.0.1:8000/server/games/{self.object["id"]}/'
+            data = {'end_game': request.POST.get('end_game'), 'game_id': self.object["id"]}
+            response = requests.patch(url=url, json=json.dumps(data), headers=self.request.headers)
         #     return self._finish_game(request)
         # elif request.POST.get('transformation'):
         #     return self._transform(request)
         # elif request.POST.get('start_column'):
         #     return self._turn(request)
         return redirect(f'/client/game/{self.object["id"]}')
-    #
-    # def _game_init(self, request):
-    #     initiation = request.POST.get('initiation')
-    #     if initiation == 'True':
-    #         GameManipulator().accept(request.user, self.object)
-    #         return redirect(f'/game/{self.object.id}')
-    #     elif initiation == 'False':
-    #         GameManipulator().decline(request.user, self.object)
-    #         return redirect('/home')
-    #
-    # def _finish_game(self, request):
-    #     reason = request.POST.get('end_game')
-    #     GameManipulator().end_game(self.object, reason)
-    #     return redirect(f'/game/{self.object.id}')
-    #
-    # def _transform(self, request):
-    #     role = request.POST.get('transformation')
-    #     GameManipulator().turn(request.user, self.object, role=role)
-    #     return redirect(f'/game/{self.object.id}')
-    #
-    # def _turn(self, request):
-    #     start_row = request.POST.get('start_row')
-    #     start_column = request.POST.get('start_column')
-    #     end_row = request.POST.get('end_row')
-    #     end_column = request.POST.get('end_column')
-    #     start = (int(start_row), int(start_column))
-    #     end = (int(end_row), int(end_column))
-    #     GameManipulator().turn(request.user, self.object, start, end)
-    #     return redirect(f'/game/{self.object.id}')
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get('id')
         url = f'http://127.0.0.1:8000/server/games/{pk}'
         response = requests.get(url, headers=self.request.headers)
         return response.json()
-
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     # if context['object']['status'] in 'SDBWT':
-    #     #     url = 'http://127.0.0.1:8000/server/figures'
-    #     #
-    #     return context
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()

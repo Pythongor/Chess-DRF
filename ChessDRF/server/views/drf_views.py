@@ -71,7 +71,6 @@ class GameViewSet(viewsets.ModelViewSet):
         else:
             search = (Q(white_player=self.request.user) | Q(black_player=self.request.user))
         games = Game.objects.filter(Q(status__in='IST', test=False) & search).order_by('id')
-        # print(games)
         return Response(self.serializer_class(games, many=True).data)
 
     def list(self, request, users=None, games=None, **kwargs):
@@ -108,13 +107,15 @@ class GameViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         data = json.loads(request.data)
-        initiation = data['initiation']
         game = Game.objects.get(id=data['game_id'])
-        if game.status == 'I':
-            if initiation == 'False':
-                GameManipulator().decline(request.user, game)
-            elif initiation == 'True':
-                GameManipulator().accept(request.user, game)
+        if initiation := data.get('initiation'):
+            if game.status == 'I':
+                if initiation == 'False':
+                    GameManipulator().decline(request.user, game)
+                elif initiation == 'True':
+                    GameManipulator().accept(request.user, game)
+        elif reason := data.get('end_game'):
+            GameManipulator().end_game(game, reason)
         return Response(data=data)
 
 
