@@ -106,6 +106,17 @@ class GameViewSet(viewsets.ModelViewSet):
             data = {'detail': 'This game already exists'}
         return Response(data=data)
 
+    def partial_update(self, request, *args, **kwargs):
+        data = json.loads(request.data)
+        initiation = data['initiation']
+        game = Game.objects.get(id=data['game_id'])
+        if game.status == 'I':
+            if initiation == 'False':
+                GameManipulator().decline(request.user, game)
+            elif initiation == 'True':
+                GameManipulator().accept(request.user, game)
+        return Response(data=data)
+
 
 @api_view_serializer_class_getter(
     lambda: registration_settings.REGISTER_SERIALIZER_CLASS)

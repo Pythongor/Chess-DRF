@@ -141,6 +141,7 @@ class GameView(DetailView):
         # print(context['render_dict'])
         return render(request, self.template_name, context)
 
+# TODO adaptive design
 # TODO: AJAX
 # TODO: DRF
 # TODO: python anywhere

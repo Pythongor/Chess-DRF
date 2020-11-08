@@ -65,7 +65,7 @@
         </h2>
         <h5>{{ game.white_message }}</h5>
         <div>
-          <form action="{% url 'game' pk=game.id %}" method="post">
+          <form action="{% url 'game' id=game.id %}" method="post">
             {% csrf_token %}
             {% for figure in transformation_figures %}
             <label>
@@ -85,7 +85,7 @@
         </h2>
         <h5>{{ game.black_message }}</h5>
         <div>
-          <form action="{% url 'game' pk=game.id %}" method="post">
+          <form action="{% url 'game' id=game.id %}" method="post">
             {% csrf_token %}
             {% for figure in transformation_figures %}
             <label>
@@ -169,12 +169,12 @@
             {% elif bp.id == request.user.id %}
               <h5>{{ game.black_message }}</h5>
             {% endif %}
-          <form action="{% url 'game' pk=game.id %}" method="post">
+          <form action="{% url 'game' id=game.id %}" method="post">
             {% csrf_token %}
             <input type="hidden" value="M" name="end_game">
             <input class="grey-button lonely-button" type="submit" value="Capitulate">
           </form>
-          <form action="{% url 'game' pk=game.id %}" method="post" id="form">
+          <form action="{% url 'game' id=game.id %}" method="post" id="form">
             {% csrf_token %}
             <input type="hidden" id="startRow" name="start_row">
             <input type="hidden" id="startColumn" name="start_column">

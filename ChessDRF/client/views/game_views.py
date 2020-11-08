@@ -80,20 +80,25 @@ class NewGameView(LoginMixin):
 @method_decorator(login_required, name='dispatch')
 class GameView(DetailView, LoginMixin):
     # model = Game
+    object = None
     template_name = 'game/game.html'
     context_object_name = 'game'
 
-    # def post(self, request, *args, **kwargs):
-    #     self.object = self.get_object()
-    #     if request.POST.get('initiation'):
-    #         return self._game_init(request)
-    #     elif request.POST.get('end_game'):
-    #         return self._finish_game(request)
-    #     elif request.POST.get('transformation'):
-    #         return self._transform(request)
-    #     elif request.POST.get('start_column'):
-    #         return self._turn(request)
-    #     return redirect(f'/game/{self.object.id}')
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if request.POST.get('initiation'):
+            url = f'http://127.0.0.1:8000/server/games/{self.object["id"]}/'
+            data = {'initiation': request.POST.get('initiation'), 'game_id': self.object["id"]}
+            response = requests.patch(url=url, json=json.dumps(data), headers=self.request.headers)
+        # if request.POST.get('initiation'):
+        #     return self._game_init(request)
+        # elif request.POST.get('end_game'):
+        #     return self._finish_game(request)
+        # elif request.POST.get('transformation'):
+        #     return self._transform(request)
+        # elif request.POST.get('start_column'):
+        #     return self._turn(request)
+        return redirect(f'/client/game/{self.object["id"]}')
     #
     # def _game_init(self, request):
     #     initiation = request.POST.get('initiation')
@@ -130,12 +135,12 @@ class GameView(DetailView, LoginMixin):
         response = requests.get(url, headers=self.request.headers)
         return response.json()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # if context['object']['status'] in 'SDBWT':
-        #     url = 'http://127.0.0.1:8000/server/figures'
-        #
-        return context
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     # if context['object']['status'] in 'SDBWT':
+    #     #     url = 'http://127.0.0.1:8000/server/figures'
+    #     #
+    #     return context
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
