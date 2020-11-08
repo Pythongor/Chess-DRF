@@ -85,19 +85,10 @@ class GameView(DetailView, LoginMixin):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if request.POST.get('initiation'):
-            url = f'http://127.0.0.1:8000/server/games/{self.object["id"]}/'
-            data = {'initiation': request.POST.get('initiation'), 'game_id': self.object["id"]}
-            response = requests.patch(url=url, json=json.dumps(data), headers=self.request.headers)
-        elif request.POST.get('end_game'):
-            url = f'http://127.0.0.1:8000/server/games/{self.object["id"]}/'
-            data = {'end_game': request.POST.get('end_game'), 'game_id': self.object["id"]}
-            response = requests.patch(url=url, json=json.dumps(data), headers=self.request.headers)
-        #     return self._finish_game(request)
-        # elif request.POST.get('transformation'):
-        #     return self._transform(request)
-        # elif request.POST.get('start_column'):
-        #     return self._turn(request)
+        url = f'http://127.0.0.1:8000/server/games/{self.object["id"]}/'
+        data = {**request.POST, 'game_id': self.object["id"]}
+        print(data)
+        requests.patch(url=url, json=json.dumps(data), headers=self.request.headers)
         return redirect(f'/client/game/{self.object["id"]}')
 
     def get_object(self, queryset=None):

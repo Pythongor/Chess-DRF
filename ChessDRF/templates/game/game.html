@@ -4,10 +4,6 @@
 <script src="/static/scripts.js"></script>
 <div class="centered">
   {% with wp=game.white_player bp=game.black_player %}
-  {{game.status}}
-  {{request.user.id}}
-  {{wp.id}}
-  {{bp.id}}
   {% if request.user.id != wp.id and request.user.id != bp.id %}
     <div class="card">
       <h2 style="margin-bottom: 50px">

@@ -110,12 +110,22 @@ class GameViewSet(viewsets.ModelViewSet):
         game = Game.objects.get(id=data['game_id'])
         if initiation := data.get('initiation'):
             if game.status == 'I':
-                if initiation == 'False':
+                if initiation[0] == 'False':
                     GameManipulator().decline(request.user, game)
-                elif initiation == 'True':
+                elif initiation[0] == 'True':
                     GameManipulator().accept(request.user, game)
         elif reason := data.get('end_game'):
-            GameManipulator().end_game(game, reason)
+            GameManipulator().end_game(game, reason[0])
+        elif role := data.get('transformation'):
+            GameManipulator().turn(request.user, game, role=role[0])
+        elif data.get('start_column'):
+            start_row = int(data.get('start_row')[0])
+            start_column = int(data.get('start_column')[0])
+            end_row = int(data.get('end_row')[0])
+            end_column = int(data.get('end_column')[0])
+            start = (int(start_row), int(start_column))
+            end = (int(end_row), int(end_column))
+            GameManipulator().turn(request.user, game, start, end)
         return Response(data=data)
 
 
