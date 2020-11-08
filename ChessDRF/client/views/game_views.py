@@ -19,6 +19,7 @@ class LoginMixin(View):
         token = request.session.get('token')
         headers = {'Content-Type': 'application/json', 'Authorization': f'Token {token}'}
         request.headers = headers
+        request.session.set_expiry(0)
         return super().dispatch(request, *args, **kwargs)
 
 
@@ -87,7 +88,6 @@ class GameView(DetailView, LoginMixin):
         self.object = self.get_object()
         url = f'http://127.0.0.1:8000/server/games/{self.object["id"]}/'
         data = {**request.POST, 'game_id': self.object["id"]}
-        print(data)
         requests.patch(url=url, json=json.dumps(data), headers=self.request.headers)
         return redirect(f'/client/game/{self.object["id"]}')
 

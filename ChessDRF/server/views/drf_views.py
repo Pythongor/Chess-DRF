@@ -57,7 +57,6 @@ class FigureViewSet(viewsets.ReadOnlyModelViewSet):
             figures = Figure.objects.filter(game__id=game_id)
         else:
             figures = Figure.objects.all()
-        # print(games)
         return Response(self.serializer_class(figures, many=True).data)
 
 
@@ -168,6 +167,5 @@ def login(request):
         return Response({'error': 'Invalid Credentials'},
                         status=HTTP_404_NOT_FOUND)
     token, _ = Token.objects.get_or_create(user=user)
-    print(get_token(request))
     return Response({'token': token.key},
                     status=HTTP_200_OK)

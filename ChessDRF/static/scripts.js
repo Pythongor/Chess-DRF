@@ -44,3 +44,27 @@ function sendPost (start, end) {
   document.getElementById('form').submit()
 }
 
+const getDeviceType = () => {
+  const ua = navigator.userAgent;
+  if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+    return "tablet";
+  }
+  if (
+    /Mobile|iP(hone|od|ad)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(
+      ua
+    )
+  ) {
+    return "mobile";
+  }
+  return "desktop";
+};
+
+if (getDeviceType() != 'desktop') {
+  document.body.innerHTML = `
+<div class="centered">
+  <div class="card">
+    Adaptive design under construction. Please switch to desktop device
+  </div>
+</div>
+`
+}

@@ -183,5 +183,7 @@ TEMPLATE_DIRS = (
     PROJECT_PATH + '/templates/',
 )
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 LOGIN_URL = '/client/login'
 AUTH_USER_MODEL = 'server.ChessUser'

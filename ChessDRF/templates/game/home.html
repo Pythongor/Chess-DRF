@@ -53,7 +53,7 @@
     </form>
     {% for user in not_started_game_users %}
       <div class="item">
-        <img src="{{user.photo}}" alt="">
+        <img src="/media/{{user.photo}}" alt="">
         <h5>{{ user.username }}</h5>
         <form action="new_game" method="post">
           {% csrf_token %}

@@ -20,6 +20,7 @@ class LoginMixin(View):
         token = request.session.get('token')
         headers = {'Content-Type': 'application/json', 'Authorization': f'Token {token}'}
         request.headers = headers
+        request.session.set_expiry(0)
         return super().dispatch(request, *args, **kwargs)
 
 
