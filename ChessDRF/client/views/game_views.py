@@ -148,13 +148,10 @@ class GameView(DetailView, LoginMixin):
         context['row_options'] = tuple(map(lambda x: (str(x + 1), x), range(8)))
         context['column_options'] = tuple(map(lambda x: ('ABCDEFGH'[x], x), range(8)))
         context['transformation_figures'] = ('knight', 'bishop', 'rook', 'queen')
-        # if type(self.object.board) == Board:
-        #     context['render_dict'] = self.object.board.get_render_dict()
-        #     if self.object.black_player == request.user:
-        #         context['rows'] = list(range(1, 9))
-        #         context['columns'] = 'HGFEDCBA'
-        #     elif self.object.white_player == request.user:
-        #         context['rows'] = list(range(8, 0, -1))
-        #         context['columns'] = 'ABCDEFGH'
-        # print(context['render_dict'])
+        if self.object['black_player']['id'] == request.user.id:
+            context['rows'] = list(range(1, 9))
+            context['columns'] = 'HGFEDCBA'
+        elif self.object['white_player']['id'] == request.user.id:
+            context['rows'] = list(range(8, 0, -1))
+            context['columns'] = 'ABCDEFGH'
         return render(request, self.template_name, context)

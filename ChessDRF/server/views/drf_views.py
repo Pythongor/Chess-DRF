@@ -88,10 +88,10 @@ class GameViewSet(viewsets.ModelViewSet):
         return Response(context)
 
     def retrieve(self, request, pk, *args, **kwargs):
+        # TODO Encapsulation
         game = Game.objects.get(id=pk)
         data = dict(self.serializer_class(game).data)
-        figures = Figure.objects.filter(game=game)
-        data['figures'] = FigureSerializer(figures, many=True).data
+        data['render_dict'] = game.board.get_render_dict()
         return Response(data)
 
     def create(self, request, *args, **kwargs):

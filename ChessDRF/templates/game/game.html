@@ -117,7 +117,7 @@
                 {% cycle 'dark' 'light' as color silent %}
               {% endif %}
               {% with position=column|concat:row %}
-              {% with figure=render_dict|get:position %}
+              {% with figure=object.render_dict|get:position %}
               {% if figure is not None %}
                 {% with figure_white=figure|get:"is_white" %}
                 {% if figure_white and request.user.id == wp.id %}
