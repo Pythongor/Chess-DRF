@@ -1,0 +1,42 @@
+asgiref @ file:///tmp/build/80754af9/asgiref_1594338739818/work
+attrs @ file:///tmp/build/80754af9/attrs_1600298409949/work
+beautifulsoup4==4.9.2
+bootstrap4==0.1.0
+brotlipy==0.7.0
+certifi==2020.6.20
+cffi @ file:///tmp/build/80754af9/cffi_1600699146221/work
+chardet==3.0.4
+colorama==0.4.3
+cryptography @ file:///tmp/build/80754af9/cryptography_1601046815590/work
+Django==3.0.3
+django-bootstrap4==2.2.0
+django-crispy-forms==1.9.2
+django-filter==2.3.0
+django-pytest==0.2.0
+django-rest-registration==0.5.6
+djangorestframework==3.11.1
+idna @ file:///tmp/build/80754af9/idna_1593446292537/work
+iniconfig @ file:///tmp/build/80754af9/iniconfig_1602780191262/work
+Markdown==3.2.2
+more-itertools @ file:///tmp/build/80754af9/more-itertools_1598884071673/work
+numpy==1.19.1
+packaging==20.4
+Pillow==7.2.0
+pluggy==0.13.1
+psycopg2 @ file:///tmp/build/80754af9/psycopg2_1594305108220/work
+py @ file:///tmp/build/80754af9/py_1593446248552/work
+pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
+pyOpenSSL @ file:///tmp/build/80754af9/pyopenssl_1594392929924/work
+pyparsing==2.4.7
+PySocks==1.7.1
+pytest==6.0.2
+pytest-django==3.10.0
+pytest-ordering==0.6
+pytz==2020.1
+requests @ file:///tmp/build/80754af9/requests_1592841827918/work
+six==1.15.0
+soupsieve==2.0.1
+sqlparse==0.3.1
+toml @ file:///tmp/build/80754af9/toml_1592853716807/work
+typing==3.7.4.3
+urllib3 @ file:///tmp/build/80754af9/urllib3_1597086586889/work

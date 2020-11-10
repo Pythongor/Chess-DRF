@@ -1,17 +1,12 @@
 import requests
 import json
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.db.models import Q
-from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render, redirect, reverse
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
-from django.views.generic import TemplateView, ListView, View, DetailView
-from django.utils.translation import gettext as _
-
-# from ..models import ChessUser, Game, Figure
-# from ..logic import Board
-# from ..logic.manipulator import GameManipulator
+from django.views.generic import ListView, View, DetailView
 
 
 class LoginMixin(View):
@@ -40,7 +35,7 @@ class GamesView(ListView, LoginMixin):
         return self.render_to_response(context)
 
     def get_context_data(self, users=None, games=None, **kwargs):
-        url = 'http://127.0.0.1:8000/server/games/'
+        url = f'{settings.ROOT_URL}server/games/'
         data = {'users': users, 'games': games}
         response = requests.get(url=url, data=json.dumps(data), headers=self.request.headers)
         return response.json()
@@ -69,7 +64,7 @@ class NewGameView(LoginMixin):
     def post(self, request):
         creator_is_white = request.POST['creator_is_white'] in ('True', True)
         opponent_pk = int(request.POST['opponent_id'])
-        url = 'http://127.0.0.1:8000/server/games/'
+        url = f'{settings.ROOT_URL}server/games/'
         data = {'creator_is_white': creator_is_white, 'opponent_pk': opponent_pk}
         response = requests.post(url=url, json=json.dumps(data), headers=self.request.headers)
         if 200 <= response.status_code < 300:
@@ -87,14 +82,14 @@ class GameView(DetailView, LoginMixin):
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
-        url = f'http://127.0.0.1:8000/server/games/{self.object["id"]}/'
+        url = f'{settings.ROOT_URL}server/games/{self.object["id"]}/'
         data = {**request.POST, 'game_id': self.object["id"]}
         requests.patch(url=url, json=json.dumps(data), headers=self.request.headers)
         return redirect(f'/client/game/{self.object["id"]}')
 
     def get_object(self, queryset=None):
         pk = self.kwargs.get('id')
-        url = f'http://127.0.0.1:8000/server/games/{pk}'
+        url = f'{settings.ROOT_URL}server/games/{pk}'
         response = requests.get(url, headers=self.request.headers)
         return response.json()
 

@@ -9,6 +9,6 @@ urlpatterns = [
     path('new_game', game_views.NewGameView.as_view(), name='new_game'),
     path('enter', account_views.EnterView.as_view(), name='enter'),
     path('login', account_views.LoginView.as_view(), name='login'),
-    path('signup', account_views.SignUpView.as_view(), name='signup'),
+    path('sign_up', account_views.SignUpView.as_view(), name='signup'),
     path('users/<username>', account_views.ProfileView.as_view(), name='profile'),
 ]
