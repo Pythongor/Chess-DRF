@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-from . import secret
 from django.core.exceptions import ImproperlyConfigured
 
 
