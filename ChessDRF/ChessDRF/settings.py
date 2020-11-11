@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import django_heroku
 from django.core.exceptions import ImproperlyConfigured
 
 
@@ -197,3 +198,5 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
 LOGIN_URL = '/client/login'
 AUTH_USER_MODEL = 'server.ChessUser'
+# Activate Django-Heroku.
+django_heroku.settings(locals())
