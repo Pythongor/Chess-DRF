@@ -31,7 +31,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = get_env_value('SECRET_KEY')
+SECRET_KEY = "0z%#6*49sd)(_svs_2ym8sv@tb&6&qlfy)*03d=+4513virp8n"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -104,7 +104,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'chess_drf_db',
         'USER': 'demitrius',
-        'PASSWORD': get_env_value('POSTGRES_PASSWORD'),
+        'PASSWORD': 'postgress',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     },
