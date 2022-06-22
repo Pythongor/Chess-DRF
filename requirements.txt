@@ -21,7 +21,7 @@ idna
 iniconfig
 Markdown==3.2.2
 more-itertools
-numpy==1.19.1
+numpy==1.22.0
 packaging==20.4
 Pillow==7.2.0
 pluggy==0.13.1
